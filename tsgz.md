@@ -218,6 +218,104 @@ align-self属性允许单个项目有与其他项目不一样的对齐方式，�
 
 ### 1.平移
 
+#### animation
+
+```
+div{
+ animation: myfirst 5s;
+ -moz-animation: myfirst 5s;	/* Firefox */
+ -webkit-animation: myfirst 5s;	/* Safari 和 Chrome */
+ -o-animation: myfirst 5s;	/* Opera */
+}
+
+@keyframes myfirst {
+ from {background:red;}
+ to {background:yellow;}
+}
+
+@-moz-keyframes myfirst /* Firefox */ {
+ from {background:red;}
+ to {background:yellow;}
+}
+
+@-webkit-keyframes myfirst /* Safari and Chrome */ {
+ from {background:red;}
+ to {background:yellow;}
+}
+
+@-o-keyframes myfirst /* Opera */ {
+ from {background:red;}
+ to {background:yellow;}
+}
+```
+
+除了from to 还可以用 
+0%   {background: red;}
+25%  {background: yellow;}
+50%  {background: blue;}
+100% {background: green;}
+
+第三个参数
+linear	动画从头到尾的速度是相同的。	
+ease	默认。动画以低速开始，然后加快，在结束前变慢。	
+ease-in	动画以低速开始。	
+ease-out	动画以低速结束。	
+ease-in-out	动画以低速开始和结束。	
+
+这个参数可以用来做抛物线
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+<style> 
+
+.holder {
+	position: relative;
+    width:300px;
+	height:300px;
+}
+.a{
+	left : 0;
+	position:absolute;
+	animation:mymoveY 5s;
+}
+.b
+{
+	width:100px;
+	height:100px;
+	background:red;
+	position:absolute;
+	animation:mymoveX 5s ease-in-out;
+}
+
+@keyframes mymoveX
+{
+	from {left:0px;}
+	to {left:200px;}
+}
+
+@keyframes mymoveY
+{
+	0% {top:0px;}
+	50% {top:200px;}
+    100% {top:0px;}
+}
+
+</style>
+</head>
+<body>
+
+<div class='holder'>
+	<div class='a'>
+		<div class='b'></div>
+	</div>
+</div>
+
+</body>
+</html>
+```
+
 ### 2.轮动
 
 ### 3.vue动画
