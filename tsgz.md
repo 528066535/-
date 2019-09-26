@@ -1,4 +1,4 @@
-## 态势感知界面的结构 目录
+## 态势感知界面的样式分析 目录
 
 #### 布局
 
@@ -21,10 +21,6 @@
  2. 柱状图
 
  3. 地图
-
-
-
-
 
 ## 布局
 
@@ -316,9 +312,27 @@ ease-in-out	动画以低速开始和结束。
 </html>
 ```
 
+其他参数
+
+animation-delay			规定动画何时开始。默认是 0
+animation-iteration-count	规定动画被播放的次数。默认是 1 （infinite 为无限循环）
+animation-direction		规定动画是否在下一周期逆向地播放。默认是 "normal"
+animation-play-state		规定动画是否正在运行或暂停。默认是 "running"
+animation-fill-mode		规定对象动画时间之外的状态。
+
 ### 2.轮动
 
-### 3.vue动画
+#### transition(过渡)
+
+transition	简写属性，用于在一个属性中设置四个过渡属性。	
+transition-property	规定应用过渡的 CSS 属性的名称。	
+transition-duration	定义过渡效果花费的时间。默认是 0。	
+transition-timing-function	规定过渡效果的时间曲线。默认是 "ease"。	
+transition-delay	规定过渡效果何时开始。默认是 0。	
+
+### 3.vue过渡
+
+
 
 ## 图表
 
