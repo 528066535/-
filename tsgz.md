@@ -16,11 +16,7 @@
 
 #### 图表
 
- 1. 折线图
-
- 2. 柱状图
-
- 3. 地图
+ 地图
 
 ## 布局
 
@@ -330,9 +326,72 @@ transition-duration	定义过渡效果花费的时间。默认是 0。
 transition-timing-function	规定过渡效果的时间曲线。默认是 "ease"。	
 transition-delay	规定过渡效果何时开始。默认是 0。	
 
-### 3.vue过渡
+### 3.vue
 
+#### 使用场景
 
+条件渲染 (使用 v-if)
+
+条件展示 (使用 v-show)
+
+动态组件
+
+组件根节点
+
+#### 使用方法
+
+```
+<div id="demo">
+  <button v-on:click="show = !show">
+    Toggle
+  </button>
+  <transition name="fade">
+    <p v-if="show">hello</p>
+  </transition>
+</div>
+
+//css
+.fade-enter-active {
+  transition: opacity .5s;
+}
+.fade-leave-active {
+  opacity: 0;
+}
+```
+
+#### 类名
+
+v-enter：定义进入过渡的开始状态。在元素被插入之前生效，在元素被插入之后的下一帧移除。
+
+v-enter-active：定义进入过渡生效时的状态。在整个进入过渡的阶段中应用，在元素被插入之前生效，在过渡/动画完成之后移除。这个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。
+
+v-enter-to: 2.1.8版及以上 定义进入过渡的结束状态。在元素被插入之后下一帧生效 (与此同时 v-enter 被移除)，在过渡/动画完成之后移除。
+
+v-leave: 定义离开过渡的开始状态。在离开过渡被触发时立刻生效，下一帧被移除。
+
+v-leave-active：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡/动画完成之后移除。这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。
+
+v-leave-to: 2.1.8版及以上 定义离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 v-leave 被删除)，在过渡/动画完成之后移除。
+
+#### transition-group 
+
+多个元素可以放在 transition-group 标签下。
+
+如果有多个元素过渡或者动画，默认结束和开始的动作是同时进行的。
+
+#### 模式属性 mode
+
+in-out：新元素先进行过渡，完成之后当前元素过渡离开。
+
+out-in：当前元素先进行过渡，完成之后新元素过渡进入。
+
+’‘’
+<transition-group name="list" mode="out-in">
+    <span v-for="item in items" v-bind:key="item" class="list-item">
+        {{ item }}
+    </span>
+</transition-group>
+‘’‘
 
 ## 图表
 
