@@ -1,6 +1,13 @@
 # Event Loop
 
 
+# 问题一
+
+Vue.nextTick()的回调什么时候会执行？适用于什么情况下？
+
+Vue.nextTick()的原理是什么？
+
+
 ## 同步和异步
 
 ### 一. 正常情况下，浏览器是单线程的
@@ -98,9 +105,36 @@ Event Loop (事件循环)。
 task分为两大类, 分别是 Macro Task （宏任务）和 Micro Task（微任务）, 并且每个宏任务结束后, 
 都要执行所有的微任务。
 
+# 问题二
+
+```
+async function async1() {
+    console.log('async1 start');
+    await async2();
+    console.log('async1 end');
+}
+async function async2() {
+    console.log('async2');
+}
+console.log('script start');
+setTimeout(function() {
+    console.log('setTimeout');
+}, 0)
+async1();
+new Promise(function(resolve) {
+    console.log('promise1');
+    resolve();
+}).then(function() {
+    console.log('promise2');
+});
+console.log('script end');
+```
 
 ## 总结
 
 最后的最后，记住，JavaScript 是一门单线程语言，异步操作都是放到事件循环队列里面，等待主执行栈来执行的，并没有专门的异步执行线程。
+
+# 问题三
+浏览器从输入url到界面渲染完成，经历了哪些过程？
 
 
