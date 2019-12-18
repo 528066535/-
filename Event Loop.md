@@ -4,13 +4,6 @@
 
 在浏览器中，通常伴随着很多事件的发生，比如用户点击、页面渲染、脚本执行、网络请求，等等。为了协调这些事件的处理，浏览器使用事件循环机制。
 
-# Vue.nextTick()
-
-Vue.nextTick()的回调什么时候会执行？适用于什么情况下？
-
-Vue.nextTick()的原理是什么？
-
-
 ## 同步和异步
 
 ### 一. 正常情况下，浏览器是单线程的
@@ -132,6 +125,12 @@ new Promise(function(resolve) {
 });
 console.log('script end');
 ```
+
+# Vue.nextTick()
+
+Vue.nextTick()的回调什么时候会执行？适用于什么情况下？
+
+Vue.nextTick()的原理是什么？
 
 ### vue的降级策略
 
