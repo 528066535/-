@@ -1,7 +1,20 @@
 # Event Loop
 
+## 引入
 
-# 问题一
+在浏览器中，通常伴随着很多事件的发生，比如用户点击、页面渲染、脚本执行、网络请求，等等。为了协调这些事件的处理，浏览器使用事件循环机制。
+
+# 问题一 
+
+下面代码界面刷新了几次？
+
+```
+for(let i=0; i<100; i++){
+    dom.style.left = i + 'px';
+}
+```
+
+# Vue.nextTick()
 
 Vue.nextTick()的回调什么时候会执行？适用于什么情况下？
 
@@ -69,12 +82,6 @@ Javascript引擎，也可以称为JS内核，主要负责处理Javascript脚本�
 
 5. 异步HTTP请求线程。
 
-### 三. Web Worker
-
-HTML5 中提出 Web Worker 标准，允许新开一个线程，但是新开子线程受主线程控制，并且不能操作DOM。
-
-
-
 ## 任务队列
 
 ### 1. 主线程
@@ -105,7 +112,13 @@ Event Loop (事件循环)。
 task分为两大类, 分别是 Macro Task （宏任务）和 Micro Task（微任务）, 并且每个宏任务结束后, 
 都要执行所有的微任务。
 
-# 问题二
+每一次事件循环都包含一个microtask队列，在循环结束后会依次执行队列中的microtask并移除，然后再开始下一次事件循环。
+
+我们知道，在执行microtask的过程中后加入microtask队列的微任务，也会在下一次事件循环之前被执行。也就是说，macrotask总要等到microtask都执行完后才能执行，microtask有着更高的优先级。
+
+microtask的这一特性，简直是做队列控制的最佳选择啊！vue进行DOM更新内部也是调用nextTick来做异步队列控制。而当我们自己调用nextTick的时候，它就在更新DOM的那个microtask后追加了我们自己的回调函数，从而确保我们的代码在DOM更新后执行，同时也避免了setTimeout可能存在的多次执行问题。
+
+# 问题三
 
 ```
 async function async1() {
@@ -130,11 +143,31 @@ new Promise(function(resolve) {
 console.log('script end');
 ```
 
+### vue的降级策略
+
+上面我们讲到了，队列控制的最佳选择是micro task，而micro task的最佳选择是Promise.但如果当前环境不支持Promise，vue就不得不降级为macrotask来做队列控制了。
+
+macrotask有哪些可选的方案呢？前面提到了setTimeout是一种，但它不是理想的方案。因为setTimeout执行的最小时间间隔是约4ms的样子，略微有点延迟。还有其他的方案吗？
+
+不卖关子了，在vue2.5的源码中，macrotask降级的方案依次是：setImmediate、MessageChannel、setTimeout.
+
+setImmediate是最理想的方案了，可惜的是只有IE和nodejs支持。
+
+MessageChannel的onmessage回调也是microtask，但也是个新API，面临兼容性的尴尬...
+
+所以最后的兜底方案就是setTimeout了，尽管它有执行延迟，可能造成多次渲染，算是没有办法的办法了。
+
 ## 总结
+
+以上就是vue的nextTick方法的实现原理了，总结一下就是：
+
+vue用异步队列的方式来控制DOM更新和nextTick回调先后执行
+microtask因为其高优先级特性，能确保队列中的微任务在一次事件循环前被执行完毕
+因为兼容性问题，vue不得不做了microtask向macrotask的降级方案
 
 最后的最后，记住，JavaScript 是一门单线程语言，异步操作都是放到事件循环队列里面，等待主执行栈来执行的，并没有专门的异步执行线程。
 
-# 问题三
-浏览器从输入url到界面渲染完成，经历了哪些过程？
+# 问题四
 
+浏览器从输入url到界面渲染完成，经历了哪些过程？
 
