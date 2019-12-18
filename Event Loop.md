@@ -140,15 +140,9 @@ Vue.nextTick()的原理是什么？
 
 上面我们讲到了，队列控制的最佳选择是micro task，而micro task的最佳选择是Promise.但如果当前环境不支持Promise，vue就不得不降级为macrotask来做队列控制了。
 
-macrotask有哪些可选的方案呢？前面提到了setTimeout是一种，但它不是理想的方案。因为setTimeout执行的最小时间间隔是约4ms的样子，略微有点延迟。还有其他的方案吗？
+而Vue具体采用下面的策略来执行Vue.nextTick。
 
-不卖关子了，在vue2.5的源码中，macrotask降级的方案依次是：setImmediate、MessageChannel、setTimeout.
-
-setImmediate是最理想的方案了，可惜的是只有IE和nodejs支持。
-
-MessageChannel的onmessage回调也是microtask，但也是个新API，面临兼容性的尴尬...
-
-所以最后的兜底方案就是setTimeout了，尽管它有执行延迟，可能造成多次渲染，算是没有办法的办法了。
+Promise > MutationObserver > setImmediate > setTimeout （2.6.x版本）
 
 ## 总结
 
@@ -176,6 +170,8 @@ for(let i=0; i<100; i++){
 }
 ```
 
-# 问题
+### 问题
 
-如果是GUI渲染结束前，执行微任务，那Vue.nextTick如果能获取到dom？
+如果是GUI渲染结束前，执行微任务，那 Vue.nextTick 在支持 Promise 的情况下，能获取到 dom 吗？
+
+答案是可以的，alert可以中断执行，用alert测试一下，发现界面没渲染出来也能获取到dom。
