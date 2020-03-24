@@ -1,6 +1,9 @@
 # PWA
 
-## PWA 的作用？
+## PWA介绍
+
+苹果手机演示：
+第一步，请用safri打开 weibo.cn 或者 github.com 。第二步，点击屏幕最下方中间的分享按钮，屏幕网上滑动，找到并添加到主屏幕。最后回到主屏幕，发现多了一个应用图标，可以点击进入到刚刚的网站，微博和github进入的样子会稍有不同，可以自行体验。
 
 ### 1. PWA 是什么？
 
@@ -13,47 +16,92 @@ PWA并不是单指某一项技术，你更可以把它理解成是一种思想�
 #### c. 推送功能。推送大致是浏览器向我们服务器订阅推送，我们自己的服务器向谷歌或者火狐浏览器的Push Service发送推送消息，Push Service再把消息发送给浏览器，浏览器再对消息进行处理。（目前尚不成熟，有待提升）
 #### d. 用户可以直接保存网页，不需要下载庞大的app，并且每次更新不需要重新到应用商店下载应用。
 
-### 3. PWA 的关键技术
+## PWA 的关键技术
 
-#### Web App Manifest
+### 1. Web App Manifest
+常用参数：
 
-#### Service Worker
+```
+{
+    "name": "技术分享",  //指定了Web App的名称
+    "short_name": "测试", //简称，如果name展示不下，会显示这个
+    "start_url": "/", //指定用户打开该Web App时加载的URL。相对URL会相对于manifest
+    "display": "standalone", //fullscreen：全屏显示，会尽可能将所有的显示区域都占满；standalone：独立应用模式，这种模式下打开的应用有自己的启动图标，并且不会有浏览器的地址栏。因此看起来更像一个Native App；minimal-ui：与standalone相比，该模式会多出地址栏；browser：一般来说，会和正常使用浏览器打开样式一致
+    "background_color": "#333", //在应用的样式资源为加载完毕前的默认背景，因此会展示在开屏界面。background_color加上我们定义的icons就组成了Web App打开时的“开屏图”
+    "description": "简单介绍PWA相关知识",
+    "orientation": "portrait-primary", //控制Web App的方向。具体的值包括：any, natural, landscape, landscape-primary, landscape-secondary, portrait, portrait-primary, portrait-secondary
+    "theme_color": "#5eace0", //定义应用程序的默认主题颜色
+    "icons": [{ //用来指定应用的桌面图标
+        "src": "img/icons/book-32.png",
+        "sizes": "32x32",
+        "type": "image/png"
+    }, {
+        "src": "img/icons/book-72.png",
+        "sizes": "72x72",
+        "type": "image/png"
+    }, {
+        "src": "img/icons/book-128.png",
+        "sizes": "128x128",
+        "type": "image/png"
+    }, {
+        "src": "img/icons/book-144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+    }, {
+        "src": "img/icons/book-192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    }, {
+        "src": "img/icons/book-256.png",
+        "sizes": "256x256",
+        "type": "image/png"
+    }, {
+        "src": "img/icons/book-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }]
+}
+```
+使用方法：
+```
+<!-- 在index.html中添加以下meta标签 -->
+<link rel="manifest" href="/manifest.json">
+```
+提示：pwa-manifest-webpack-plugin 插件能够让我们在应用构建的时候生成 manifest 文件
 
-#### Cache API 缓存
+### 2. 注册
 
-#### Push&Notification 推送与通知
+// index.js
+if ('serviceWorker' in window.navigator) {
+  navigator.serviceWorker.register('./sw.js', { scope: './' })
+    .then(function (reg) {
+      console.log('success', reg);
+    })
+    .catch(function (err) {
+      console.log('fail', err);
+    });
+}
 
-#### Background Sync 后台同步
+if 用来
 
-#### 响应式设计
 
-### 4. 兼容性
+### 3. Cache API 缓存
+
+### 4. Push&Notification 推送与通知
+
+### 5. Background Sync 后台同步
+
+### 6. 响应式设计
+
+## 劣势：
+
+### 1. 浏览器对技术支持还不够全面， 不是每一款游览器都能100%的支持所有PWA
 
 ![image](http://www.mk2048.com/web_upload/blog_imgs/10/https___user-gold-cdn-xitu-io_2018_7_28_164df156c15abc42_w-1240_h-458_f-png_s-120965.gif)
 
 目前大部分浏览器尤其国外浏览器兼容性还算可以，国内浏览器兼容性有待提高。
 
 https://lavas.baidu.com/ready
-
-## Service Work 解析
-
-### 1. 独立的线程
-
-我们知道 JavaScript 是单线程，虽然 Service Worker 是独立于主线程的一个线程，但是 Service Worker 也不能对 DOM 进行操作。
-
-### 2. 离线缓存
-
-Service Worker 可以缓存 HTTP 请求到的数据。
-
-### 3. 拦截网络请求
-
-Service Worker 提供了拦截网络请求的方法。可以返回本地的缓存。
-
-### 4. 通过 postMessage 实现推送
-
-## 劣势：
-
-### 1. 游览器对技术支持还不够全面， 不是每一款游览器都能100%的支持所有PWA
 
 ### 2. 需要通过第三方库才能调用底层硬件（如摄像头）
 
