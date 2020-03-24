@@ -71,6 +71,7 @@ PWA并不是单指某一项技术，你更可以把它理解成是一种思想�
 
 ### 2. 注册
 
+```
 // index.js
 if ('serviceWorker' in window.navigator) {
   navigator.serviceWorker.register('./sw.js', { scope: './' })
@@ -81,9 +82,13 @@ if ('serviceWorker' in window.navigator) {
       console.log('fail', err);
     });
 }
+```
 
-if 用来
+if 用来判断浏览器是否支持 serviceWorker ，避免不兼容导致的bug。
 
+在默认情况下，Service Worker 必定会每24小时被下载一次，如果下载的文件是最新文件，那么它就会被重新注册和安装，但不会被激活，当不再有页面使用旧的 Service Worker 的时候，它就会被激活。
+
+所以
 
 ### 3. Cache API 缓存
 
