@@ -25,7 +25,14 @@ d. 用户可以直接保存网页，不需要下载庞大的app，并且每次�
 ## PWA 的技术实现
 
 ### 1. Manifest
+使用方法：
+```
+<!-- 在index.html中添加以下meta标签 -->
+<link rel="manifest" href="/manifest.json">
+```
+提示：pwa-manifest-webpack-plugin 插件能够让我们在应用构建的时候生成 manifest 文件
 
+具体配置：
 ```
 {
     "name": "技术分享",  //指定了Web App的名称
@@ -67,12 +74,6 @@ d. 用户可以直接保存网页，不需要下载庞大的app，并且每次�
     }]
 }
 ```
-使用方法：
-```
-<!-- 在index.html中添加以下meta标签 -->
-<link rel="manifest" href="/manifest.json">
-```
-提示：pwa-manifest-webpack-plugin 插件能够让我们在应用构建的时候生成 manifest 文件
 
 ### 2. 注册
 
