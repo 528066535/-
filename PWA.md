@@ -24,7 +24,7 @@ d. 用户可以直接保存网页，不需要下载庞大的app，并且每次�
 
 ## PWA 的技术实现
 
-### 1. Manifest
+### 一. Manifest
 使用方法：
 ```
 <!-- 在index.html中添加以下meta标签 -->
@@ -75,7 +75,16 @@ d. 用户可以直接保存网页，不需要下载庞大的app，并且每次�
 }
 ```
 
-### 2. 注册
+### 二. Service Worker 的使用
+
+SW 的生命周期 (Regist ->（Download）-> Install -> Actived)
+
+
+### 1. 注册 Service Worker
+
+由于兼容性的要求，可以把 PWA 当做渐进增强的一个功能。
+
+注意PWA是异步安装，不会影响 主线程 和 渲染线程。
 
 ```
 // index.js
@@ -90,13 +99,7 @@ if ('serviceWorker' in window.navigator) {
 }
 ```
 
-if 用来判断浏览器是否支持 serviceWorker ，避免不兼容导致的bug，达到了渐进增强的目的。
-
-在默认情况下，Service Worker 必定会每24小时被下载一次，如果下载的文件是最新文件，那么它就会被重新注册和安装，但不会被激活，当不再有页面使用旧的 Service Worker 的时候，它就会被激活。
-
-这对于我们开发来说是很不方便的，因此在这里我勾选了一个名为 Update on reload 的单选框，选中它之后，我们每次刷新页面都能够使用最新的 service worker 文件。
-
-在同一个 Origin 下，我们可以注册多个 Service Worker。但是请注意，这些 Service Worker 所使用的 scope 必须是不相同的。
+注意： scope
 
 ### 3. 通讯
 
