@@ -84,8 +84,6 @@ SW 的生命周期 (Regist ->（Download）-> Install -> Actived)
 
 由于兼容性的要求，可以把 PWA 当做渐进增强的一个功能。
 
-注意PWA是异步安装，不会影响 主线程 和 渲染线程。
-
 ```
 // index.js
 if ('serviceWorker' in window.navigator) {
@@ -99,11 +97,14 @@ if ('serviceWorker' in window.navigator) {
 }
 ```
 
-注意： scope
+注意： scope 是控制当前的作用域范围，相同作用域如果旧的sw正在使用，则不会用新的覆盖。
+另外需要注意，sw.js 最好增加时间戳，保证 Servce Worker 是最新版本。 另外，sw.js 在浏览器缓存层面最好也使用 no-cache 的手段增加保障。
 
-### 3. 通讯
+PWA是异步安装，不会影响 主线程 和 渲染线程，不能操作dom。所以 Service Worker 就有和主线程通讯的需求了
 
-#### 首先是从页面发送信息到 Serivce Worker 。
+### 2. 通讯功能
+
+#### 首先是从主页面发送信息到 Service Worker 。
 
 ```
 // index.js
@@ -126,8 +127,6 @@ this.addEventListener('message', function (event) {
 ```
 
 在 service worker 文件中我们可以直接在 this 上绑定 message 事件，这样就能够接收到页面发来的信息了。
-
-对于不同 scope 的多个 Service Worker ，我么也可以给指定的 Service Worker 发送信息。
 
 #### 从 Service Worker 到页面
 
@@ -158,7 +157,9 @@ this.clients.matchAll().then(client => {
 
 ### 4. 缓存
 
-缓存指定静态资源
+这里的缓存不是我们平时见到的 HTTP 缓存。
+
+另外有一点需要注意的是，出于对安全问题的考虑，Service Worker 只能被使用在 https 或者本地的 localhost 环境下。
 
 ```
 // sw.js
@@ -180,20 +181,21 @@ this.addEventListener('install', function (event) {
 
 从 Chrome 开发工具中的 Application 的 Cache Strogae 中可以看到我们缓存的资源。
 
-动态缓存静态资源
+动态缓存
 ```
 this.addEventListener('fetch', function (event) {
   console.log(event.request.url);
-  event.respondWith(
+  event.respondWith(    //劫持请求
     caches.match(event.request).then(res => {
-      return res ||
+      return res || //如果res有值，说明命中，则直接返回，否则则调用http请求
         fetch(event.request)
           .then(responese => {
             const responeseClone = responese.clone();
             caches.open('sw_demo').then(cache => {
-              cache.put(event.request, responeseClone);
+              // event.request.method === "POST" 注意，这里可以增加一句，如果是POST请求，则不需要缓存，POST请求会修改数据，所以缓存POST请求意义不大
+              cache.put(event.request, responeseClone); //把请求存进缓存中
             })
-            return responese;
+            return responese;   //返回请求
           })
           .catch(err => {
             console.log(err);
@@ -208,10 +210,12 @@ this.addEventListener('fetch', function (event) {
 
 1. 用户第一次访问页面的时候，资源的请求是早于 Service Worker 的安装的，所以静态资源是无法缓存的；只有当 Service Worker 安装完毕，用户第二次访问页面的时候，这些资源才会被缓存起来；
 2. Cache Stroage 只能缓存静态资源，所以它只能缓存用户的 GET 请求；
-3. Cache Stroage 中的缓存不会过期，但是浏览器对它的大小是有限制的，所以需要我们定期进行清理；
+3. Cache Stroage 中的缓存不会过期。
 
 更新 Cache Stroage
 前面提到过，当有新的 service worker 文件存在的时候，他会被注册和安装，等待使用旧版本的页面全部被关闭后，才会被激活。这时候，我们就需要清理下我们的 Cache Stroage 了，删除旧版本的 Cache Stroage 。
+
+```
 this.addEventListener('install', function (event) {
   console.log('install');
   event.waitUntil(
@@ -239,10 +243,7 @@ this.addEventListener('activate', function (event) {
     })
   )
 });
-
-### 5. Background Sync 后台同步
-
-### 6. 响应式设计
+```
 
 ## 劣势：
 
